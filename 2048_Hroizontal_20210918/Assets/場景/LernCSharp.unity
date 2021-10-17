@@ -153,6 +153,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68b6bad3a19a44d42ab46445916b9fa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cc: 4397
+  weight: 11.39
+  brand: "\u8CD3\u58EB"
+  hasSkyWindow: 0
+  color1: {r: 0, g: 0, b: 0, a: 0}
+  colorRed: {r: 1, g: 0, b: 0, a: 1}
+  colorCustom: {r: 0, g: 0, b: 1, a: 1}
+  colorCustomAlpga: {r: 0, g: 1, b: 0, a: 0.3}
+  v2: {x: 0, y: 0}
+  v2One: {x: 1, y: 1}
+  v2Up: {x: 0, y: 1}
+  v2Custom: {x: 7, y: 9}
+  v3Custom: {x: 1, y: 2, z: 3}
+  v4Custom: {x: 1, y: 2, z: 3, w: 4}
 --- !u!212 &1162463302
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -248,6 +262,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68b6bad3a19a44d42ab46445916b9fa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cc: 2000
+  weight: 3.5
+  brand: "\u8CD3\u58EB"
+  hasSkyWindow: 1
+  color1: {r: 0, g: 0, b: 0, a: 0}
+  colorRed: {r: 1, g: 0, b: 0, a: 1}
+  colorCustom: {r: 0, g: 0, b: 1, a: 1}
+  colorCustomAlpga: {r: 0, g: 1, b: 0, a: 0.3}
+  v2: {x: 0, y: 0}
+  v2One: {x: 1, y: 1}
+  v2Up: {x: 0, y: 1}
+  v2Custom: {x: 7, y: 9}
+  v3Custom: {x: 1, y: 2, z: 3}
+  v4Custom: {x: 1, y: 2, z: 3, w: 4}
 --- !u!212 &1649589247
 SpriteRenderer:
   m_ObjectHideFlags: 0
