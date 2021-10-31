@@ -26,7 +26,7 @@ public class Car : MonoBehaviour
     // 2. 提示 Tooltip (字串)
     // 3. 範圍 Range (浮點數，浮點數)
     [Header("汽車的 CC 數")][Range(1000, 5000)]
-    public int cc = 2000;
+    public int cc = 10;
     [Tooltip("這是汽車的重量，範圍是 3 ~ 20"), Range(3, 20)]
     public float weight = 3.5f;
     public string brand = "賓士";
@@ -59,5 +59,27 @@ public class Car : MonoBehaviour
     public Transform traBox;
     public SpriteRenderer sprBox;
     public Camera cam;
+    #endregion
+
+    #region 存取欄位資料 Set Get
+
+    // 程式入口：事件
+    // 開始事件：播放遊戲時執行一次，初始設定
+    private void Start()
+    {
+        print("哈囉，沃德 :D");
+
+        // 取得 Get 欄位資料 ※ 預設值以屬性面板為主 (Inspector)
+        // 語法：
+        // 欄位名稱
+        print("CC 數：" + cc);
+        print(weight);
+
+        // 存放 Set 欄位資料
+        // 語法：
+        // 欄位名稱 指定 值；
+        brand = "BMW";
+        cc = 3500;
+    }
     #endregion
 }
