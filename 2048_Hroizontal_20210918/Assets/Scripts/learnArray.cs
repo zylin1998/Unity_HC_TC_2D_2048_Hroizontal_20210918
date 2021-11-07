@@ -12,7 +12,7 @@ public class learnArray : MonoBehaviour
 
     void Start()
     {
-        
+        for(int i = 0; i < scores.Length; i++) { scores[i] = i * 10 + 10; }
     }
 
     void Update()
