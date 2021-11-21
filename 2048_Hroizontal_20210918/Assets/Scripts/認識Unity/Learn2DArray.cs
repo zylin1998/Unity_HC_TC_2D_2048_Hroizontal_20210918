@@ -1,12 +1,13 @@
 using UnityEngine;
+using System.Linq;
 
 public class Learn2DArray : MonoBehaviour
 {
-    public int[] _numbers = { 1, 3, 5, 7, 9 };
+    public int[] _numbers = { 1, 3, 5, 10, 9 };
 
     public int[,] _array2D = { { 2, 4 }, { 6, 8 } };
 
-    public int[,] _scores = { { 1, 2 }, { 3, 4 }, { 5, 6 } };
+    public int[,] _scores = { { 10, 20 }, { 73, 54 }, { 85, 66 } };
 
     private void Start()
     {
@@ -21,6 +22,28 @@ public class Learn2DArray : MonoBehaviour
         Debug.Log("二維振烈第一維長度：" + _scores.GetLength(1));
 
         print(Result());
+
+        var NumberGratgerTen =
+            from int n in _numbers
+            where n >= 10
+            select n;
+
+        Debug.Log("一維陣列中>=10個數：" + NumberGratgerTen.Count());
+
+        for(int i = 0; i < NumberGratgerTen.Count(); i++)
+        {
+            Debug.Log(">=10的數字：" + NumberGratgerTen.ToArray()[i]);
+        }
+
+        var IsPass =
+            from int n in _scores
+            where n >= 60
+            select n;
+
+        for (int i = 0; i < IsPass.Count(); i++)
+        {
+            Debug.Log("及格的分數：" + IsPass.ToArray()[i]);
+        }
     }
 
     private string Result() 
