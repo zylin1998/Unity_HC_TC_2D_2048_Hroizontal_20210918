@@ -28,8 +28,8 @@ public class System2048 : MonoBehaviour
             { 
                 _blockData[i,j] = new BlockData();
                 _blockData[i,j].Index = new Vector2Int(i, j);
-                //_blockData[i,j].goBlock = _blocks[i *  _blockData.GetLength(1) + j].GetComponent<GameObject>();
-                _blockData[i,j].Position = _blocks[i * _blockData.GetLength(1) + j].position;
+                _blockData[i, j].goBlock = _blocks[i * _blockData.GetLength(1) + j].gameObject;
+                _blockData[i,j].Position = _blockData[i,j].goBlock.transform.position;
             }
         }
     }
