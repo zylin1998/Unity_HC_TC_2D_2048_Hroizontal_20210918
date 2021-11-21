@@ -7,7 +7,7 @@ public class CirclieController : MonoBehaviour
     public Transform transform;
 
     public Vector2 direction;
-    public float speed = 1.5f;
+    public float speed = 0.9f;
 
     // Start is called before the first frame update
     void Start()
