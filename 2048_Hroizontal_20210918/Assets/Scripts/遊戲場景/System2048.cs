@@ -1,11 +1,16 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
+using UnityEngine.Events;
 
-public enum Direction{
-
+public enum Direction
+{
     None, Right, Left, Up, Down
+}
 
+public enum StateTurn
+{
+    My, Enemy
 }
 
 public class BlockData
@@ -20,21 +25,36 @@ public class BlockData
 
 public class System2048 : MonoBehaviour
 {
+    #region 公開欄位
+
     [Header("空白區塊")]
     public Transform[] _blocks;
     [Header("數字區塊")]
     public GameObject _numberBlocks;
     [Header("畫布")]
     public Transform _canvas2048;
+    public UnityEvent onSameNumberCombine;
     [Header("起始格數")]
     public int _initialBlocksNumber = 2;
+    [Header("機率百分比"), Range(1, 100)]
+    public int _basicPresentage = 25;
+
+    #endregion
+
+    #region 非公開欄位
 
     [SerializeField]
     private Direction direction;
-    private BlockData[,] _blockData = new BlockData[1,4];
+    [SerializeField]
+    private StateTurn StateTurn;
+    private BlockData[,] _blockData = new BlockData[4,4];
     private Vector3 _posDown;
     private Vector3 _posUp;
     private bool _isClick = false;
+
+    #endregion
+
+    #region 事件
 
     private void Start() 
     { 
@@ -43,8 +63,12 @@ public class System2048 : MonoBehaviour
 
     private void Update()
     {
-        CheckDirection();
+        if (StateTurn == StateTurn.My) { CheckDirection(); }
     }
+
+    #endregion
+
+    #region 初始化
 
     private void Initialize()
     {
@@ -60,8 +84,12 @@ public class System2048 : MonoBehaviour
 
         for(int i = 0; i < _initialBlocksNumber; i++) { CreateRandomNumberBlock(); }
 
-        DisplayBlockData();
+        //DisplayBlockData();
     }
+
+    #endregion
+
+    #region 資料顯示
 
     private void DisplayBlockData() 
     {
@@ -81,6 +109,10 @@ public class System2048 : MonoBehaviour
         Debug.Log(result);
     }
 
+    #endregion
+
+    #region 亂數位置產生
+
     private void CreateRandomNumberBlock() 
     {
         var IsEmpty =
@@ -93,10 +125,21 @@ public class System2048 : MonoBehaviour
         Vector2Int RandomIndex = IsEmpty.ToArray()[_random].Index;
 
         BlockData RandomBlock = _blockData[RandomIndex.x, RandomIndex.y];
-        RandomBlock.number = 2;
+
+        int _randomPresentage = Random.Range(1, 100);
+
+        if(_randomPresentage <= 25) { RandomBlock.number = 4; }
+
+        else { RandomBlock.number = 2; }
 
         RandomBlock.goBlock = Instantiate(_numberBlocks,RandomBlock.Position, Quaternion.identity, _canvas2048);
+
+        RandomBlock.goBlock.transform.Find("數字").GetComponent<Text>().text = RandomBlock.number.ToString();
     }
+
+    #endregion
+
+    #region 方向確認
 
     private void CheckDirection() 
     {
@@ -154,74 +197,213 @@ public class System2048 : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region 確認移動方向
+
     public void CheckMoveDirection() 
     {
         Debug.Log("Now Direction: " + direction);
 
         //int[,] locate;
-
+        BlockData blockOrigin = new BlockData();
+        BlockData blockCheck = new BlockData();
+        bool canMove = false;
+        bool sameNumber = false;
+        int sameNumberCount = 0;
+        
         switch (direction)
         {
             case Direction.Right:
-                break;
-            case Direction.Left:
-                for(int i = 0; i < _blockData.GetLength(0); i++) 
+                for (int i = 0; i < _blockData.GetLength(0); i++)
                 {
-                    for(int j = 0; j < _blockData.GetLength(1); j++) 
+                    sameNumberCount = 0;              //相同數字合併次數歸零
+
+                    for (int j = _blockData.GetLength(1) - 2; j >= 0; j--)
                     {
-                        BlockData blockOrigin = new BlockData();
-                        BlockData blockCheck = new BlockData();
-                        bool canMove = false;
-                        bool sameNumber = false;
                         blockOrigin = _blockData[i, j];
 
-                        if(blockOrigin.number == 0) { continue; }
+                        //如果該區塊數字薇玲就繼續(跳過此迴圈 執行下個迴圈)
+                        if (blockOrigin.number == 0) continue;
 
-                        for(int k = j - 1; k >= 0; k--) 
+                        for (int k = j + 1; k < _blockData.GetLength(1) - sameNumberCount; k++)
                         {
                             if (_blockData[i, k].number == 0)
                             {
-                                canMove = true;
                                 blockCheck = _blockData[i, k];
+                                canMove = true;
                             }
-                            else if (_blockData[i, k].number == blockOrigin.number) 
+                            else if (_blockData[i, k].number == blockOrigin.number)
+                            {
+                                blockCheck = _blockData[i, k];
+                                canMove = true;
+                                sameNumber = true;
+                                sameNumberCount++;
+                            }
+                            else if (_blockData[i, k].number != blockOrigin.number)
+                            {
+                                break;
+                            }
+                        }
+                        if (canMove)
+                        {
+                            canMove = false;                         //是否可以移動區塊
+                            MoveBlock(blockOrigin, blockCheck, sameNumber);
+                            sameNumber = false;
+                        }
+                    }
+                }
+                break;
+            case Direction.Left:
+                for (int i = 0; i < _blockData.GetLength(0); i++)
+                {
+                    for (int j = 1; j < _blockData.GetLength(1); j++)
+                    {
+                        blockOrigin = _blockData[i, j];
+
+                        //如果該區塊數字薇玲就繼續(跳過此迴圈 執行下個迴圈)
+                        if (blockOrigin.number == 0) continue;
+
+                        for (int k = j - 1; k >= 0; k--)
+                        {
+                            if (_blockData[i, k].number == 0)
+                            {
+                                blockCheck = _blockData[i, k];
+                                canMove = true;
+                            }
+                            else if (_blockData[i, k].number == blockOrigin.number)
                             {
                                 blockCheck = _blockData[i, k];
                                 canMove = true;
                                 sameNumber = true;
                             }
-                        }
-                        if (canMove) 
-                        { 
-                            blockOrigin.goBlock.transform.position = blockCheck.Position;
-                            if (sameNumber)
+                            else if (_blockData[i, k].number != blockOrigin.number)
                             {
-                                int number = blockCheck.number * 2;
-                                blockCheck.number = number;
-
-                                Debug.Log(blockCheck.number);
-
-                                Destroy(blockOrigin.goBlock);
-                                blockCheck.goBlock.transform.Find("數字").GetComponent<Text>().text = blockCheck.number.ToString();
+                                break;
                             }
-                            else 
-                            { 
-                                blockCheck.number = blockOrigin.number;
-                                blockCheck.goBlock = blockOrigin.goBlock;
-                            }
-                            blockOrigin.number = 0;
-                            blockOrigin.goBlock = null;
-                        }                        
+                        }
+                        if (canMove)
+                        {
+                            canMove = false;                         //是否可以移動區塊
+                            MoveBlock(blockOrigin, blockCheck, sameNumber);
+                            sameNumber = false;
+                        }
                     }
                 }
-
-                DisplayBlockData();
-
                 break;
             case Direction.Up:
+                for (int i = 0; i < _blockData.GetLength(1); i++)
+                {
+                    for (int j = 1; j < _blockData.GetLength(0); j++)
+                    {
+                        blockOrigin = _blockData[j, i];
+
+                        //如果該區塊數字為零就繼續(跳過此迴圈 執行下個迴圈)
+                        if (blockOrigin.number == 0) continue;
+
+
+
+                        for (int k = j - 1; k >= 0; k--)
+                        {
+                            if (_blockData[k, i].number == 0)
+                            {
+                                blockCheck = _blockData[k, i];
+                                canMove = true;
+                            }
+                            else if (_blockData[k, i].number == blockOrigin.number)
+                            {
+                                blockCheck = _blockData[k, i];
+                                canMove = true;
+                                sameNumber = true;
+                            }
+                            else if (_blockData[k, i].number != blockOrigin.number)
+                            {
+                                break;
+                            }
+                        }
+                        if (canMove)
+                        {
+                            canMove = false;                         //是否可以移動區塊
+                            MoveBlock(blockOrigin, blockCheck, sameNumber);
+                            sameNumber = false;
+                        }
+                    }
+                }
                 break;
             case Direction.Down:
+                for (int i = 0; i < _blockData.GetLength(1); i++)
+                {
+                    for (int j = _blockData.GetLength(0) - 2; j >= 0; j--)
+                    {
+                        blockOrigin = _blockData[j, i];
+
+                        //如果該區塊數字為零就繼續(跳過此迴圈 執行下個迴圈)
+                        if (blockOrigin.number == 0) continue;
+
+
+
+                        for (int k = j + 1; k < _blockData.GetLength(0); k++)
+                        {
+                            if (_blockData[k, i].number == 0)
+                            {
+                                blockCheck = _blockData[k, i];
+                                canMove = true;
+                            }
+                            else if (_blockData[k, i].number == blockOrigin.number)
+                            {
+                                blockCheck = _blockData[k, i];
+                                canMove = true;
+                                sameNumber = true;
+                            }
+                            else if (_blockData[k, i].number != blockOrigin.number)
+                            {
+                                break;
+                            }
+                        }
+                        if (canMove)
+                        {
+                            canMove = false;                         //是否可以移動區塊
+                            MoveBlock(blockOrigin, blockCheck, sameNumber);
+                            sameNumber = false;
+                        }
+                    }
+                }
                 break;
         }
+        CreateRandomNumberBlock();
     }
+
+    #endregion
+
+    #region 移動方塊
+
+    private void MoveBlock(BlockData blockOriginal, BlockData blockCheck, bool sameNumber)
+    {
+        #region 移動區塊
+        blockOriginal.goBlock.transform.position = blockCheck.Position;
+        if (sameNumber)
+        {
+            int number = blockCheck.number * 2;
+            blockCheck.number = number;
+            Destroy(blockOriginal.goBlock);
+            blockCheck.goBlock.transform.Find("數字").GetComponent<Text>().text = blockCheck.number.ToString();
+
+            //相同數字合併事件 觸發
+            onSameNumberCombine.Invoke();
+
+        }
+        else
+        {
+            blockCheck.number = blockOriginal.number;
+            blockCheck.goBlock = blockOriginal.goBlock;
+        }
+
+        blockOriginal.number = 0;
+        blockOriginal.goBlock = null;
+        #endregion
+
+        DisplayBlockData();
+    }
+
+    #endregion
 }
