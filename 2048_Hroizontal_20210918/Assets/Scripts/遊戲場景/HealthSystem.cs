@@ -45,7 +45,7 @@ public class HealthSystem : MonoBehaviour
 
         _hp = Mathf.Clamp(_hp, 0, _hpMax);
 
-        _textHp.text = "HP " + _hp;
+        _textHp.text = "HP " + System.Convert.ToInt32(_hp);
         _imgHp.fillAmount = _hp / _hpMax;
 
         if (_hp <= 0) { Dead();}

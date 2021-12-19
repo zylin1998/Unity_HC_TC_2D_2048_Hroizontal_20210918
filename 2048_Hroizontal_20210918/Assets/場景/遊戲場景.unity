@@ -743,7 +743,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 251440326}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 692829921}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: ReLoadGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &251440326
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2032,6 +2044,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff5d81da4a40dc149942b7059bab223d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  goFinalCanvas: {fileID: 25239540}
+  textFinalTitle: {fileID: 1354473034}
 --- !u!1001 &711347231
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2722,7 +2736,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 788552e8ef6bc15408a0b5ab2fa4afdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attack: 18
+  attack: 10
+  critical: 30
+  floatDemage: 0.5
   goTarget: {fileID: 2009493394}
   _atkText: {fileID: 2111047418}
   delayAttack: 3.5
@@ -2777,6 +2793,42 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 8300000, guid: 37611e5c5350b4346a71baed92fbd06b, type: 3}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 692829921}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: ShowFInalCanvas
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 952433807}
+        m_TargetAssemblyTypeName: AttackSystem, Assembly-CSharp
+        m_MethodName: StopAttack
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 319402439}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -3410,7 +3462,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1170948991}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 692829921}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: QuitGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1170948991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8668,7 +8732,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 673bade2d1c3e4447938331b465c3682, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hp: 250
+  _hp: 500
   _textHp: {fileID: 2031427731}
   _imgHp: {fileID: 459056529}
   _tagDamageObject: "\u9583\u96FB\u7403"
@@ -8689,6 +8753,42 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 692829921}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: ShowFInalCanvas
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 2009493401}
+        m_TargetAssemblyTypeName: AttackSystem, Assembly-CSharp
+        m_MethodName: StopAttack
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 319402439}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2009493401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8702,9 +8802,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attack: 10
+  critical: 30
+  floatDemage: 0.5
   goTarget: {fileID: 952433801}
   _atkText: {fileID: 1507246773}
-  delayAttack: 3.5
+  delayAttack: 1.5
   delaySendDamage: 0.5
   parameterAttack: "\u653B\u64CA\u89F8\u767C"
   onAttackStart:

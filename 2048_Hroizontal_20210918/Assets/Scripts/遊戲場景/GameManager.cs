@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
 	[Header("畫布結束")]
-	public GameObject gpFinalCanvas;
+	public GameObject goFinalCanvas;
 	[Header("結束標題")]
 	public Text textFinalTitle;
 	
@@ -15,5 +16,15 @@ public class GameManager : MonoBehaviour
 		string title = "You " + (win ? "Win" : "Lose") + "!";
 
 		textFinalTitle.text = title;
+	}
+
+	public void ReLoadGame()
+	{
+		SceneManager.LoadScene("遊戲場景");
+	}
+
+	public void QuitGame() 
+	{
+		Application.Quit();
 	}
 }

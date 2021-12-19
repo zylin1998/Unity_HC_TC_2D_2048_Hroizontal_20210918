@@ -9,6 +9,9 @@ public class AttackSystem : MonoBehaviour
 
 	[Header("攻擊力基底")]
 	public float attack = 10;
+    public float critical = 30;
+    [Range(0.5f, 1.0f)]
+    public float floatDemage = 0.5f;
 	[Header("攻擊目標")]
 	public GameObject goTarget;
 	[Header("攻擊力介面")]
@@ -45,13 +48,28 @@ public class AttackSystem : MonoBehaviour
     [Header("攻擊完成事件")]
     public UnityEvent onAttackFinish;
 
+    private bool isStop;
+
     #region 方法：公開
+
+    public void StopAttack()
+    {
+        isStop = true;
+        StopAllCoroutines();
+        enabled = false;
+    }
 
     public virtual void Attack(float increase = 0)
 	{
+        if (isStop) { return; }
+
 		StartCoroutine(DelayAttack());
 	}
-	
+
+    #endregion
+
+    #region 私人方法
+
     private IEnumerator DelayAttack()
     {
         // 延遲 3.5 秒
@@ -66,5 +84,6 @@ public class AttackSystem : MonoBehaviour
         onAttackFinish.Invoke();
     }
 
-	#endregion
+    #endregion
+
 }
