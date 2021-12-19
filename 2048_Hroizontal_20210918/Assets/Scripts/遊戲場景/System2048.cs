@@ -33,11 +33,14 @@ public class System2048 : MonoBehaviour
     public GameObject _numberBlocks;
     [Header("畫布")]
     public Transform _canvas2048;
-    public UnityEvent onSameNumberCombine;
+    public onSameNumberCombine _onSameNumberCombine;
     [Header("起始格數")]
     public int _initialBlocksNumber = 2;
     [Header("機率百分比"), Range(1, 100)]
     public int _basicPresentage = 25;
+
+    [System.Serializable]
+    public class onSameNumberCombine : UnityEvent<float> { }
 
     #endregion
 
@@ -46,7 +49,7 @@ public class System2048 : MonoBehaviour
     [SerializeField]
     private Direction direction;
     [SerializeField]
-    private StateTurn StateTurn;
+    private StateTurn stateTurn;
     private BlockData[,] _blockData = new BlockData[4,4];
     private Vector3 _posDown;
     private Vector3 _posUp;
@@ -63,7 +66,7 @@ public class System2048 : MonoBehaviour
 
     private void Update()
     {
-        if (StateTurn == StateTurn.My) { CheckDirection(); }
+        if (stateTurn == StateTurn.My) { CheckDirection(); }
     }
 
     #endregion
@@ -199,18 +202,21 @@ public class System2048 : MonoBehaviour
 
     #endregion
 
+    [Header("敵人回合事件")]
+    public UnityEvent onEnemyTurn;
+
     #region 確認移動方向
 
     public void CheckMoveDirection() 
     {
         Debug.Log("Now Direction: " + direction);
 
-        //int[,] locate;
         BlockData blockOrigin = new BlockData();
         BlockData blockCheck = new BlockData();
         bool canMove = false;
         bool sameNumber = false;
         int sameNumberCount = 0;
+        bool canMoveBlockAll = false;
         
         switch (direction)
         {
@@ -247,6 +253,7 @@ public class System2048 : MonoBehaviour
                         }
                         if (canMove)
                         {
+                            canMoveBlockAll = true;
                             canMove = false;                         //是否可以移動區塊
                             MoveBlock(blockOrigin, blockCheck, sameNumber);
                             sameNumber = false;
@@ -257,6 +264,7 @@ public class System2048 : MonoBehaviour
             case Direction.Left:
                 for (int i = 0; i < _blockData.GetLength(0); i++)
                 {
+                    sameNumberCount = 0;
                     for (int j = 1; j < _blockData.GetLength(1); j++)
                     {
                         blockOrigin = _blockData[i, j];
@@ -276,6 +284,7 @@ public class System2048 : MonoBehaviour
                                 blockCheck = _blockData[i, k];
                                 canMove = true;
                                 sameNumber = true;
+                                sameNumberCount++;
                             }
                             else if (_blockData[i, k].number != blockOrigin.number)
                             {
@@ -284,6 +293,7 @@ public class System2048 : MonoBehaviour
                         }
                         if (canMove)
                         {
+                            canMoveBlockAll = true;
                             canMove = false;                         //是否可以移動區塊
                             MoveBlock(blockOrigin, blockCheck, sameNumber);
                             sameNumber = false;
@@ -294,6 +304,7 @@ public class System2048 : MonoBehaviour
             case Direction.Up:
                 for (int i = 0; i < _blockData.GetLength(1); i++)
                 {
+                    sameNumberCount = 0;
                     for (int j = 1; j < _blockData.GetLength(0); j++)
                     {
                         blockOrigin = _blockData[j, i];
@@ -315,6 +326,7 @@ public class System2048 : MonoBehaviour
                                 blockCheck = _blockData[k, i];
                                 canMove = true;
                                 sameNumber = true;
+                                sameNumberCount++;
                             }
                             else if (_blockData[k, i].number != blockOrigin.number)
                             {
@@ -323,6 +335,7 @@ public class System2048 : MonoBehaviour
                         }
                         if (canMove)
                         {
+                            canMoveBlockAll = true;
                             canMove = false;                         //是否可以移動區塊
                             MoveBlock(blockOrigin, blockCheck, sameNumber);
                             sameNumber = false;
@@ -333,14 +346,13 @@ public class System2048 : MonoBehaviour
             case Direction.Down:
                 for (int i = 0; i < _blockData.GetLength(1); i++)
                 {
+                    sameNumberCount = 0;
                     for (int j = _blockData.GetLength(0) - 2; j >= 0; j--)
                     {
                         blockOrigin = _blockData[j, i];
 
                         //如果該區塊數字為零就繼續(跳過此迴圈 執行下個迴圈)
                         if (blockOrigin.number == 0) continue;
-
-
 
                         for (int k = j + 1; k < _blockData.GetLength(0); k++)
                         {
@@ -354,6 +366,7 @@ public class System2048 : MonoBehaviour
                                 blockCheck = _blockData[k, i];
                                 canMove = true;
                                 sameNumber = true;
+                                sameNumberCount++;
                             }
                             else if (_blockData[k, i].number != blockOrigin.number)
                             {
@@ -362,6 +375,7 @@ public class System2048 : MonoBehaviour
                         }
                         if (canMove)
                         {
+                            canMoveBlockAll = true;
                             canMove = false;                         //是否可以移動區塊
                             MoveBlock(blockOrigin, blockCheck, sameNumber);
                             sameNumber = false;
@@ -370,7 +384,17 @@ public class System2048 : MonoBehaviour
                 }
                 break;
         }
-        CreateRandomNumberBlock();
+
+        if (canMoveBlockAll)
+        {
+            onEnemyTurn.Invoke();
+            stateTurn = StateTurn.Enemy;
+            CreateRandomNumberBlock();                      // 移動後 生成下一顆區塊
+        }
+        else
+        {
+            print("不能移動");
+        }
     }
 
     #endregion
@@ -389,7 +413,7 @@ public class System2048 : MonoBehaviour
             blockCheck.goBlock.transform.Find("數字").GetComponent<Text>().text = blockCheck.number.ToString();
 
             //相同數字合併事件 觸發
-            onSameNumberCombine.Invoke();
+            _onSameNumberCombine.Invoke(number);
 
         }
         else
@@ -405,5 +429,15 @@ public class System2048 : MonoBehaviour
         DisplayBlockData();
     }
 
+    #endregion
+
+    #region 方法：公開
+    /// <summary>
+    /// 切換到我方回合
+    /// </summary>
+    public void ChangeToMyTurn()
+    {
+        stateTurn = StateTurn.My;
+    }
     #endregion
 }

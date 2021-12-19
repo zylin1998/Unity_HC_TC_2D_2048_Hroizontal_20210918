@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class HealthSystem : MonoBehaviour
 {
@@ -13,7 +14,9 @@ public class HealthSystem : MonoBehaviour
     [Header("動畫參數")]
     public string _parameterDemage = "受傷觸發";
     public string _parameterDead = "死亡觸發";
-    
+    [Header("死亡事件")]
+    public UnityEvent onDead;
+
     private float _hpMax;
     private Animator _anim;
 
@@ -50,5 +53,9 @@ public class HealthSystem : MonoBehaviour
         _anim.SetTrigger(_parameterDemage);
     }
 
-    public void Dead() { _anim.SetTrigger(_parameterDead); }
+    public void Dead() 
+    { 
+        onDead.Invoke();
+        _anim.SetTrigger(_parameterDead); 
+    }
 }

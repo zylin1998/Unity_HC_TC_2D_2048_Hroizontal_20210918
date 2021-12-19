@@ -10,15 +10,13 @@ public class AttackSystemFar : AttackSystem
 	public float speed = 100f;
 	
 	// override ÂÐ¼g¡GÂÐ¼g¤÷Ãþ§O
-	public override void Attack()
+	public override void Attack(float increase = 0)
 	{
-		base.Attack();
-
-		print("»·¶Z§ðÀ»");
+		onAttackStart.Invoke();
 
 		GameObject tempAttack =  Instantiate(goAttackPartical, positionSpawn.position, Quaternion.identity);
 		tempAttack.GetComponent<Rigidbody2D>().AddForce(new Vector2(speed,0));
 
-		tempAttack.GetComponent<Bullet>().attack = attack;
+		tempAttack.GetComponent<Bullet>().attack = attack * increase;
 	}
 }
